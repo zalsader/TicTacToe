@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>AI TicTacToe</title>
+<script type="text/javascript" src="underscore-min.js"></script>
+<script type="text/javascript" src="tictactoe.js"></script>
+<script type="text/javascript" src="board.js"></script>
+<script src="jQueryAssets/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script src="jQueryAssets/jquery-ui-1.9.2.dialog.custom.min.js" type="text/javascript"></script>
+<script src="jQueryAssets/jquery-ui-1.9.2.button.custom.min.js" type="text/javascript"></script>
+<link href="ticktactoe.css" rel="stylesheet" type="text/css">
+<link href="jQueryAssets/jquery.ui.core.min.css" rel="stylesheet" type="text/css">
+<link href="jQueryAssets/jquery.ui.theme.min.css" rel="stylesheet" type="text/css">
+<link href="jQueryAssets/jquery.ui.dialog.min.css" rel="stylesheet" type="text/css">
+<link href="jQueryAssets/jquery.ui.resizable.min.css" rel="stylesheet" type="text/css">
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="Dialog1">
+  <form method="get" target="_self" class="form-inline">
+    <div class="form-group">
+      <label for="size">Board size:</label>
+      <input name="size" type="number"  class="form-control" id="size" min="3" title="Size of board" value="3">
+    </div>
+    <div class="form-group">
+      <label for="hardness">Hardness (right is hardest):</label>
+      <input name="hardness" type="range" id="hardness" max="1" min="0" step="0.01" title="Hardness" value="1"  class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="depth">Depth of Recursion:</label>
+      <input name="depth" type="number"  class="form-control" id="depth" max="10" min="0" step="1" title="Depth of recursion, 0 for default." value="0">
+    </div>
+    <div class="form-group">
+      <label for="turn">Start with:</label>
+      <select name="turn" id="turn" class="form-control">
+        <option value="x">Player / Player X</option>
+        <option value="o">Computer / Player O</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="players">Game Mode:</label>
+      <select name="players" id="players" class="form-control">
+        <option value="1">One Player</option>
+        <option value="2">Two Players</option>
+      </select>
+    </div>
+    <input type="submit" title="OK" class="btn btn-default">
+  </form>
+</div>
+<button class="btn btn-default" id="settings">Settings</button>
+<button class="btn btn-default" id="newgame">New Game</button>
+<div class="counter">Win: <span id="win">0</span> Lose: <span id="lose">0</span> Tie: <span id="tie">0</span></div>
+<div id="winner">
+<div id="message"></div>
+</div>
+<div id="games"></div>
+<script>
+var tttgame;
+	$(new_game);
+
+// Read a page's GET URL variables and return them as an associative array.
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+$(function() {
+	$( "#Dialog1" ).dialog({
+		modal:true,
+		resizable:false,
+		draggable:false,
+		width:500,
+		hide:{effect: "fade"},
+		show:{effect: "fade"},
+		title:"Settings",
+		autoOpen:false
+	});
+	$( "#settings" ).click(function(){
+ 		$( "#Dialog1" ).dialog("open");
+	});
+});
+$(function() {
+	$( "#winner" ).dialog({
+		modal:true,
+		autoOpen:false,
+		draggable:false,
+		resizable:false,
+		hide:{effect: "highlight"},
+		show:{effect: "puff"}
+	}); 
+});
+$(function(){
+	$("#newgame").click(new_game);
+});
+$(function(){
+	$("#games").on("game_finished", function(e, kind){
+		$("#"+kind).text(Number($("#"+kind).text())+1)
+	});
+});
+
+function new_game(){
+	if ($(".tttcurr").size()===0){
+		var board = create_board(getUrlVars());
+		tttgame = board.game;
+		set_current_game(board);
+		$("#games").append(board);
+	}
+}
+</script>
+</body>
+</html>
